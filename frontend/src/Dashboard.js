@@ -11,7 +11,8 @@ function Dashboard() {
 
   const fetchFiles = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/files');
+      const res = await axios.get('https://cyberxplore-project.onrender.com/api/files')
+
       const newFiles = res.data.files; 
 
       // Alert when scan completes
