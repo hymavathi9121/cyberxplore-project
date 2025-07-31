@@ -5,18 +5,17 @@ function Dashboard() {
   const [files, setFiles] = useState([]);
   const [filter, setFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalFiles, setTotalFiles] = useState(0);
   const filesPerPage = 5;
   const [selectedFile, setSelectedFile] = useState(null);
   const prevResults = useRef({});
 
   const fetchFiles = async () => {
     try {
-      const res = await axios.get(`https://cyberxplore-project.onrender.com/api/files?page=${currentPage}&limit=${filesPerPage}`);
-      const newFiles = res.data.files;
-      setTotalFiles(res.data.total || 0);
+      const res = await axios.get('https://cyberxplore-project.onrender.com/api/files')
 
-      // Alert for newly scanned files
+      const newFiles = res.data.files; 
+
+      // Alert when scan completes
       newFiles.forEach(file => {
         if (
           file.status === 'scanned' &&
@@ -42,14 +41,16 @@ function Dashboard() {
     fetchFiles();
     const interval = setInterval(fetchFiles, 5000);
     return () => clearInterval(interval);
-  }, [currentPage]);
+  }, []);
 
   const filteredFiles = files.filter(file => {
     if (filter === 'all') return true;
     return file.result === filter || (filter === 'pending' && file.status === 'pending');
   });
 
-  const totalPages = Math.ceil(totalFiles / filesPerPage);
+  const indexOfLast = currentPage * filesPerPage;
+  const indexOfFirst = indexOfLast - filesPerPage;
+  const currentFiles = filteredFiles.slice(indexOfFirst, indexOfLast);
 
   return (
     <div className="dashboard">
@@ -82,7 +83,7 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {filteredFiles.map((f) => (
+            {currentFiles.map((f) => (
               <tr key={f._id}>
                 <td data-label="Filename">{f.filename}</td>
                 <td data-label="Status" className={f.status}>{f.status}</td>
@@ -98,7 +99,7 @@ function Dashboard() {
 
       {/* Pagination */}
       <div className="pagination">
-        {Array.from({ length: totalPages }).map((_, i) => (
+        {Array.from({ length: Math.ceil(filteredFiles.length / filesPerPage) }).map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrentPage(i + 1)}

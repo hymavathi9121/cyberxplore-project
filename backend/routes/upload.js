@@ -1,16 +1,16 @@
 const express = require('express');
-const router = express.Router();
 const multer = require('multer');
 const File = require('../models/File');
 const queue = require('../queue');
 const path = require('path');
 const fs = require('fs');
-const crypto = require('crypto');
+
+const router = express.Router(); //
 
 // Multer config
 const upload = multer({
   dest: path.join(__dirname, '../uploads/'),
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
   fileFilter: (req, file, cb) => {
     const allowed = ['.pdf', '.docx', '.jpg', '.png'];
     const ext = path.extname(file.originalname).toLowerCase();
@@ -18,21 +18,24 @@ const upload = multer({
   }
 });
 
-// POST /upload
+// Upload API
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
-    const fileBuffer = fs.readFileSync(req.file.path);
-    const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
 
-    // Optional Redis check skipped
-
+    // Save file metadata to MongoDB
     const file = new File({
       filename: req.file.originalname,
       path: req.file.path
     });
 
     await file.save();
+
+    // Enqueue file for scanning
     queue.enqueue(file);
+
     res.status(200).json({ message: 'Uploaded', file });
   } catch (err) {
     console.error('Upload error:', err);
@@ -40,11 +43,11 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-//GET /files with pagination
+// Fetch all files (with pagination support)
 router.get('/files', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
+    const limit = 5;
     const skip = (page - 1) * limit;
 
     const total = await File.countDocuments();
