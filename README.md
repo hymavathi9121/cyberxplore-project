@@ -49,9 +49,14 @@ Frontend: Deployed via Netlify from GitHub or built folder
 Backend: Deployed via Render with MongoDB Atlas URI hardcoded in server.js
 
 
+How Malware Scanning Works
+When a file is uploaded, its metadata is stored with status pending.
 
+A background worker simulates scanning using setTimeout() (2–5 seconds).
 
+If any malicious keywords (e.g., rm -rf, eval, bitcoin) are found in the file, it's marked as infected. Otherwise, it's marked clean.
 
+The MongoDB document is updated with the result and timestamp.
 
 
 
