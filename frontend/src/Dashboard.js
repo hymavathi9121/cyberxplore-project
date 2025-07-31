@@ -83,20 +83,16 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {currentFiles.length > 0 ? (
-              currentFiles.map((f) => (
-                <tr key={f._id}>
-                  <td>{f.filename}</td>
-                  <td className={f.status}>{f.status}</td>
-                  <td className={f.result}>{f.result || '-'}</td>
-                  <td>{new Date(f.uploadedAt).toLocaleString()}</td>
-                  <td>{f.scannedAt ? new Date(f.scannedAt).toLocaleString() : '-'}</td>
-                  <td><button onClick={() => setSelectedFile(f)}>View</button></td>
-                </tr>
-              ))
-            ) : (
-              <tr><td colSpan="6" style={{ textAlign: 'center' }}>No files found.</td></tr>
-            )}
+            {currentFiles.map((f) => (
+              <tr key={f._id}>
+                <td data-label="Filename">{f.filename}</td>
+                <td data-label="Status" className={f.status}>{f.status}</td>
+                <td data-label="Result" className={f.result}>{f.result || '-'}</td>
+                <td data-label="Uploaded At">{new Date(f.uploadedAt).toLocaleString()}</td>
+                <td data-label="Scanned At">{f.scannedAt ? new Date(f.scannedAt).toLocaleString() : '-'}</td>
+                <td data-label="Actions"><button onClick={() => setSelectedFile(f)}>View</button></td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
