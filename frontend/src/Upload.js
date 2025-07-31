@@ -16,7 +16,7 @@ function Upload() {
     formData.append('file', file);
 
     try {
-      await axios.post('http://localhost:5000/api/upload', formData, {
+      await axios.post('https://cyberxplore-project.onrender.com/api/upload', formData, {
         onUploadProgress: (event) => {
           const percent = Math.round((event.loaded * 100) / event.total);
           setProgress(percent);
