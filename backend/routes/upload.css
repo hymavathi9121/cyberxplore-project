@@ -1,0 +1,12 @@
+.upload-container {
+  margin-bottom: 20px;
+}
+
+.upload-container input {
+  margin-right: 10px;
+}
+
+.upload-container p {
+  margin-top: 10px;
+  font-style: italic;
+}
