@@ -3,8 +3,8 @@ const File = require('./models/File');
 const queue = require('./queue');
 const axios = require('axios');
 
-// Replace with your real or test webhook (e.g. https://webhook.site)
-const webhookURL = 'https://webhook.site/5a3bf946-b41b-4c43-b42e-5e0650a13e64'; // TODO: Replace with your own
+//test webhook (e.g. https://webhook.site)
+const webhookURL = 'https://webhook.site/5a3bf946-b41b-4c43-b42e-5e0650a13e64'; 
 
 const dangerousKeywords = ['rm -rf', 'eval', 'bitcoin'];
 
@@ -20,7 +20,7 @@ function scanFile(file) {
       scannedAt: new Date()
     });
 
-    console.log(`✅ Scanned ${file.filename} → ${result.toUpperCase()}`);
+    console.log(`Scanned ${file.filename} → ${result.toUpperCase()}`);
 
     // Send webhook alert if infected
     if (isInfected) {
@@ -30,9 +30,9 @@ function scanFile(file) {
           result: 'infected',
           scannedAt: new Date()
         });
-        console.log('📣 Webhook alert sent!');
+        console.log('Webhook alert sent!');
       } catch (err) {
-        console.error('❌ Failed to send webhook alert:', err.message);
+        console.error('Failed to send webhook alert:', err.message);
       }
     }
   }, 2000 + Math.random() * 3000);

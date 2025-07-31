@@ -12,7 +12,7 @@ function Dashboard() {
   const fetchFiles = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/files');
-      const newFiles = res.data.files; // ✅ FIXED
+      const newFiles = res.data.files; 
 
       // Alert when scan completes
       newFiles.forEach(file => {
